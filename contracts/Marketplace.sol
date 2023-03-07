@@ -22,6 +22,17 @@ contract Marketplace is Ownable {
         return property.ownerOf(tokenId);
     }
 
+    function getRoyaltyAmount(
+        uint256 tokenId,
+        uint256 salePrice
+    ) public view returns (address, uint256) {
+        (address owner, uint256 royaltyAmount) = property.royaltyInfo(
+            tokenId,
+            salePrice
+        );
+        return (owner, royaltyAmount * 100);
+    }
+
     /// @notice Function to mint the property as an NFT in the Property collection.
     /// @param _royalty Royalty percentage
     function mintProperty(
@@ -45,13 +56,12 @@ contract Marketplace is Ownable {
     /// @param tokenId Token id of the NFT
     /// @param royalty Royalty Percentage of the Sale Price
     function setRoyalty(uint256 tokenId, uint256 royalty) external {
-        property.setRoyalty(tokenId, royalty);
+        property.setRoyalty(tokenId, msg.sender, royalty);
     }
 
     /// @notice Function to put property on sale in the marketplace.
     /// @param _tokenId TokenId of the NFT
     function setPropertyOnSale(uint256 _tokenId) external {
-        property.approve(address(this), _tokenId);
         onSale[_tokenId] = true;
     }
 
@@ -64,10 +74,10 @@ contract Marketplace is Ownable {
             _tokenId,
             salePrice
         );
-        uint256 totalAmount = salePrice + royalAmount;
+        uint256 totalAmount = salePrice + (royalAmount * 100);
         require(msg.value > totalAmount, "ERR:WV");
 
-        (bool successRoyalty, ) = firstOwner.call{value: royalAmount}("");
+        (bool successRoyalty, ) = firstOwner.call{value: royalAmount * 100}("");
         require(successRoyalty, "ERR:RT");
 
         (bool success, ) = property.ownerOf(_tokenId).call{value: salePrice}(
@@ -75,7 +85,11 @@ contract Marketplace is Ownable {
         );
         require(success, "ERR:ST");
 
-        property.safeTransferFrom(firstOwner, msg.sender, _tokenId);
+        property.safeTransferFrom(
+            property.ownerOf(_tokenId),
+            msg.sender,
+            _tokenId
+        );
     }
 
     /// Function to start the rental agreement of the NFT for specific duration

@@ -50,8 +50,12 @@ contract Property is ERC721, ERC721Royalty, ERC4907, Ownable {
     /// @notice Function to set royalty.
     /// @param tokenId Token id of the NFT
     /// @param royalty Royalty Percentage of the Sale Price
-    function setRoyalty(uint256 tokenId, uint256 royalty) external {
-        _setTokenRoyalty(tokenId, msg.sender, uint96(royalty));
+    function setRoyalty(
+        uint256 tokenId,
+        address receiver,
+        uint256 royalty
+    ) external {
+        _setTokenRoyalty(tokenId, receiver, uint96(royalty));
     }
 
     // function getSalePrice(uint256 tokenId) external view returns (uint256) {
