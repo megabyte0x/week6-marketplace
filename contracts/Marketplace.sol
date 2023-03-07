@@ -4,7 +4,7 @@ pragma solidity ^0.8.18;
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "./Property.sol";
 
-contract Markeplace is Ownable {
+contract Marketplace is Ownable {
     Property property;
 
     mapping(uint256 => bool) onSale;
