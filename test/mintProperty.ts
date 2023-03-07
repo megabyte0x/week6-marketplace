@@ -1,7 +1,6 @@
 import { loadFixture, time } from "@nomicfoundation/hardhat-network-helpers";
 import { expect } from "chai";
 import { ethers } from "hardhat";
-import { abi } from "../artifacts/contracts/Property.sol/Property.json";
 
 describe("Mint Property", function () {
   async function fixture() {
@@ -16,16 +15,10 @@ describe("Mint Property", function () {
     const marketplace = await marketplaceContract.deploy();
     await marketplace.deployed();
 
-    const property = await ethers.getContractAt(
-      abi,
-      await marketplace.getPropertyAddress()
-    );
-
     return {
       user1,
       user2,
       marketplace,
-      property,
       royalty,
       name,
       description,
@@ -39,7 +32,6 @@ describe("Mint Property", function () {
       user1,
       user2,
       marketplace,
-      property,
       royalty,
       name,
       description,
