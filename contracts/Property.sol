@@ -3,14 +3,13 @@ pragma solidity ^0.8.18;
 
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Royalty.sol";
-import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Burnable.sol";
 
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
 
 import "./ERC4907.sol";
 
-contract Property is ERC721, ERC721Royalty, ERC721Burnable, ERC4907, Ownable {
+contract Property is ERC721, ERC721Royalty, ERC4907, Ownable {
     using Counters for Counters.Counter;
 
     Counters.Counter private _tokenIdCounter;
