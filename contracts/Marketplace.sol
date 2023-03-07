@@ -18,6 +18,10 @@ contract Marketplace is Ownable {
         return address(property);
     }
 
+    function getOwner(uint256 tokenId) public view returns (address) {
+        return property.ownerOf(tokenId);
+    }
+
     /// @notice Function to mint the property as an NFT in the Property collection.
     /// @param _royalty Royalty percentage
     function mintProperty(
@@ -28,6 +32,7 @@ contract Marketplace is Ownable {
         uint256 _salePrice
     ) external {
         property.safeMint(
+            msg.sender,
             _royalty,
             _name,
             _description,
@@ -53,7 +58,7 @@ contract Marketplace is Ownable {
     /// @notice Function to buy property from marketplace with paying royalty to the first owner.
     /// @param _tokenId TokenId of the NFT
     function buyProperty(uint256 _tokenId) external payable {
-        uint256 salePrice = property.getSalePrice(_tokenId);
+        uint256 salePrice = property.getPropertyDetails(_tokenId).salePrice;
         require(onSale[_tokenId], "ERR:NS");
         (address firstOwner, uint256 royalAmount) = property.royaltyInfo(
             _tokenId,

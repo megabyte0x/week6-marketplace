@@ -28,6 +28,7 @@ contract Property is ERC721, ERC721Royalty, ERC4907, Ownable {
     /// @notice Safe Mint with the tokenURI containg the metadata
 
     function safeMint(
+        address to,
         uint256 royalty,
         string calldata _name,
         string calldata _description,
@@ -36,7 +37,7 @@ contract Property is ERC721, ERC721Royalty, ERC4907, Ownable {
     ) external {
         uint256 tokenId = _tokenIdCounter.current();
         _tokenIdCounter.increment();
-        _safeMint(msg.sender, tokenId);
+        _safeMint(to, tokenId);
         _setTokenRoyalty(tokenId, msg.sender, uint96(royalty));
         propertyDetails[tokenId] = PropertyDetails({
             name: _name,
@@ -53,8 +54,14 @@ contract Property is ERC721, ERC721Royalty, ERC4907, Ownable {
         _setTokenRoyalty(tokenId, msg.sender, uint96(royalty));
     }
 
-    function getSalePrice(uint256 tokenId) external view returns (uint256) {
-        return propertyDetails[tokenId].salePrice;
+    // function getSalePrice(uint256 tokenId) external view returns (uint256) {
+    //     return propertyDetails[tokenId].salePrice;
+    // }
+
+    function getPropertyDetails(
+        uint256 tokenId
+    ) external view returns (PropertyDetails memory) {
+        return propertyDetails[tokenId];
     }
 
     // The following functions are overrides required by Solidity.
